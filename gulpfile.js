@@ -11,13 +11,14 @@ var config = {
   
   vendor: {
     js: [
-      './bower_components/angular/angular.js',
-      './bower_components/angular-modal-service/dst/angular-modal-service.js',
-      './bower_components/jquery/dist/jquery.js'
+        './bower_components/jquery/dist/jquery.js',
+        './bower_components/bootstrap/dist/js/bootstrap.js',
+        './bower_components/angular/angular.js',
+        './bower_components/angular-modal-service/dst/angular-modal-service.js'
     ],
 
     fonts: [
-      './bower_components/font-awesome/fonts/fontawesome-webfont.*'
+        './bower_components/font-awesome/fonts/fontawesome-webfont.*'
     ]
   },
 

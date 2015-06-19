@@ -22,34 +22,31 @@ app.controller('loginController', ['$scope', '$element', 'title', 'close', 'goog
         $scope.close = function() {
             console.log("Voy a por el login");
             googleLogin.login();
-            console.log("Entro en close");
-
-            close({
-                name: $scope.currentUser.name,
-                loggedin: $scope.loggedin
-            }, 500); // close, but give 500ms for bootstrap to animate
         };
+
+        $scope.$on("google:authenticated", function(auth) {
+            console.log(auth);
+            /*googlePlus.getCurrentUser().then(function(user) {
+                $scope.currentUser = user;
+                $scope.loggedin = 'You are loggedin';
+                close({
+                    name: $scope.currentUser.displayName,
+                    loggedin: $scope.loggedin
+                }, 500); // close, but give 500ms for bootstrap to animate
+            });*/
+        });
 
         $scope.$on("googlePlus:loaded", function() {
             googlePlus.getCurrentUser().then(function(user) {
-                console.log('Este es mi user: '+user);
                 $scope.currentUser = user;
                 $scope.loggedin = 'You are loggedin';
+                close({
+                    name: $scope.currentUser.displayName,
+                    loggedin: $scope.loggedin
+                }, 500); // close, but give 500ms for bootstrap to animate
             });
         });
 
-        /*$scope.$on("googlePlus:loaded", function() {
-            console.log("Entro en googlePlus");
-            googlePlus.getCurrentUser().then(function(userInfo) {
-                $scope.currentUser = userInfo;
-                $scope.loggedin = 'You are loggedin';
-            });
-
-            close({
-                name: $scope.currentUser.name,
-                loggedin: $scope.loggedin
-            }, 500); // close, but give 500ms for bootstrap to animate
-        });*/
 
         //  This cancel function must use the bootstrap, 'modal' function because
         //  the doesn't have the 'data-dismiss' attribute.
@@ -59,7 +56,7 @@ app.controller('loginController', ['$scope', '$element', 'title', 'close', 'goog
 
             //  Now call close, returning control to the caller.
             close({
-                name: $scope.currentUser.name,
+                name: $scope.currentUser.displayName,
                 loggedin: $scope.loggedin
             }, 500); // close, but give 500ms for bootstrap to animate
         };

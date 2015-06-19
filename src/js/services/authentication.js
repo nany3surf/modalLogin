@@ -46,11 +46,22 @@ angular.module('authentication', [])
             var config = this.config;
             var deferred = $q.defer();
             return {
+                /*setToken: function(data) {
+                    *//* Cache the token *//*
+                    localStorage.access_token = data.access_token;
+
+                    *//* Cache the refresh token, if there is one *//*
+                    localStorage.refresh_token = data.refresh_token || localStorage.refresh_token;
+
+                    *//* Figure out when the token will expire by using the current time, plus the valid time (in seconds), minus a 1 minute buffer *//*
+                    var expiresAt = new Date().getTime() + parseInt(data.expires_in, 10) * 1000 - 60000;
+                    localStorage.expires_at = expiresAt;
+                },*/
                 login: function () {
-                    console.log('voy al login');
                     gapi.auth.authorize({
                         client_id: config.clientId,
                         scope: config.scopes,
+                        response_type: 'code',
                         immediate: false},
                         this.handleAuthResult);
 
@@ -66,12 +77,13 @@ angular.module('authentication', [])
                     gapi.auth.authorize({
                         client_id: config.clientId,
                         scope: config.scopes,
+                        response_type: 'code',
                         immediate: true },
                         this.handleAuthResult);
                 },
 
                 handleAuthResult: function(authResult) {
-                    console.log('Estoy en el servicio con el auth: '+authResult);
+                    /*console.log('Estoy en el servicio con el auth: '+authResult);*/
                     if (authResult && !authResult.error) {
                         var data = {};
                         $rootScope.$broadcast("google:authenticated", authResult);
@@ -81,6 +93,31 @@ angular.module('authentication', [])
                         deferred.reject(authResult.error);
                     }
                 }
+
+                /*getToken: function(options) {
+                    var deferred = $.Deferred();
+
+                    if (new Date().getTime() < localStorage.expires_at) {
+                        deferred.resolve({
+                            access_token: localStorage.access_token
+                        });
+                    } else if (localStorage.refresh_token) {
+                        $.post('https://accounts.google.com/o/oauth2/token', {
+                            refresh_token: localStorage.refresh_token,
+                            client_id: options.client_id,
+                            grant_type: 'refresh_token'
+                        }).done(function(data) {
+                            this.setToken(data);
+                            deferred.resolve(data);
+                        }).fail(function(response) {
+                            deferred.reject(response.responseJSON);
+                        });
+                    } else {
+                        deferred.reject();
+                    }
+
+                    return deferred.promise();
+                }*/
             }
         };
 
@@ -96,10 +133,10 @@ angular.module('authentication', [])
                 self.getPeople = googleApiBuilder.build(gapi.client.plus.people.get);
                 self.getCurrentUser = function() {
                     return self.getPeople({userId: "me"});
-                }
+                };
                 $rootScope.$broadcast("googlePlus:loaded")
             });
 
         });
 
-    })
+    });
