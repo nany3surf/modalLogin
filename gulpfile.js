@@ -14,7 +14,9 @@ var config = {
         './bower_components/jquery/dist/jquery.js',
         './bower_components/bootstrap/dist/js/bootstrap.js',
         './bower_components/angular/angular.js',
-        './bower_components/angular-modal-service/dst/angular-modal-service.js'
+        './bower_components/angular-modal-service/dst/angular-modal-service.js',
+        './bower_components/angular-route/angular-route.js'
+        /*'./bower_components/angular-ui-router/release/angular-ui-router.js'*/
     ],
 
     fonts: [
@@ -71,6 +73,7 @@ var gulp           = require('gulp'),
     streamqueue    = require('streamqueue'),
     rename         = require('gulp-rename'),
     path           = require('path');
+    minifyHTML     = require('gulp-minify-html');
 
 
 /*================================================
@@ -89,6 +92,7 @@ gulp.on('error', function(e) {
 gulp.task('clean', function (cb) {
   return gulp.src([
         path.join(config.dest, 'index.html'),
+        path.join(config.dest, 'html'),
         path.join(config.dest, 'images'),
         path.join(config.dest, 'css'),
         path.join(config.dest, 'js'),
@@ -144,6 +148,16 @@ gulp.task('images', function () {
   return stream.pipe(gulp.dest(path.join(config.dest, 'images')));
 });
 
+gulp.task('minify-html', function() {
+    var opts = {
+        conditionals: true,
+        spare:true
+    };
+
+    return gulp.src(['src/templates/**/*.html', 'src/templates/**/*.json'])
+        .pipe(minifyHTML(opts))
+        .pipe(gulp.dest(path.join(config.dest, 'html')));
+});
 
 /*==================================
 =            Copy fonts            =
@@ -164,9 +178,6 @@ gulp.task('html', function() {
   if (typeof config.weinre === 'object') {
     inject.push('<script src="http://'+config.weinre.boundHost+':'+config.weinre.httpPort+'/target/target-script-min.js"></script>');
   }
-  /*if (config.cordova) {
-    inject.push('<script src="cordova.js"></script>');
-  }*/
   gulp.src(['src/html/**/*.html'])
   .pipe(replace('<!-- inject:js -->', inject.join('\n    ')))
   .pipe(gulp.dest(config.dest));
@@ -207,8 +218,8 @@ gulp.task('less', function () {
 gulp.task('js', function() {
     streamqueue({ objectMode: true },
       gulp.src(config.vendor.js),
-      gulp.src('./src/js/**/*.js').pipe(ngFilesort()),
-      gulp.src(['src/templates/**/*.html']).pipe(templateCache({ module: 'modallogin' }))
+      gulp.src('./src/js/**/*.js').pipe(ngFilesort())
+      //gulp.src(['src/templates/**/*.html', 'src/templates/**/*.json']).pipe(templateCache({ module: 'modallogin' }))
     )
     .pipe(sourcemaps.init())
     .pipe(concat('app.js'))
@@ -228,9 +239,9 @@ gulp.task('watch', function () {
   if (typeof config.server === 'object') {
     gulp.watch([config.dest + '/**/*'], ['livereload']);  
   }
-  gulp.watch(['./src/html/**/*'], ['html']);
+  gulp.watch(['./src/html/**/*', './src/templates/**/*'], ['html']);
   gulp.watch(['./src/less/**/*'], ['less']);
-  gulp.watch(['./src/js/**/*', './src/templates/**/*', config.vendor.js], ['js']);
+  gulp.watch(['./src/js/**/*', config.vendor.js], ['js']);
   gulp.watch(['./src/images/**/*'], ['images']);
 });
 
@@ -254,7 +265,7 @@ gulp.task('weinre', function() {
 ======================================*/
 
 gulp.task('build', function(done) {
-  var tasks = ['html', 'fonts', 'images', 'less', 'js'];
+  var tasks = ['html', 'minify-html', 'fonts', 'images', 'less', 'js'];
   seq('clean', tasks, done);
 });
 

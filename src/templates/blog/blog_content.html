@@ -1,0 +1,25 @@
+<section ng-controller="blogContentController">
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+        <img class="img-responsive image-blog-intranet" data-ng-src="{{blog.image}}" style="width: 100%;"/>
+    </div>
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="btn-group btn-group-justified" id="nav-widget">
+                    <div class="btn-group">
+                        <button class="btn text-uppercase">
+                             <i class="fa fa-user-md">&nbsp;</i><span>{{blog.author}}</span>
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn text-uppercase">
+                            <i class="fa fa-clock-o">&nbsp;</i><span ng-bind="blog.date | date:'dd/MM/yyyy'"></span>
+                        </button>
+                    </div>
+                </div>
+                <h1 id="title-content">{{blog.title}}</h1>
+                <div class="content" ng-bind-html="blog.content"></div>
+            </div>
+        </div>
+    </div>
+</section>

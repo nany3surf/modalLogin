@@ -1,0 +1,28 @@
+<section ng-controller="intranetController">
+    <h1><i class="fa fa-bookmark-o">&nbsp;</i>Intranet</h1>
+    <hr/>
+    <div class="col-sm-6 col-md-4" ng-repeat="intranet in blogIntranet" style="margin-top:2%;cursor: pointer;" ng-click="go(intranet.slug)">
+        <div class="panel shadow" id="profile-widget" >
+            <div class="panel-heading" style="min-height: 200px;background: #fff url({{intranet.picture_link}});background-size: 100% 100%;"></div>
+            <div class="panel-body">
+               <div class="media">
+                  <div class="media-body">
+                     <h2 class="media-heading">{{intranet.title}}</h2>
+                     <div class="content" ng-bind-html="intranet.summary | characters:300"></div>
+                  </div>
+               </div>
+            </div>
+            <div class="panel-footer">
+               <div class="btn-group btn-group-justified be-green-bg title-content">
+                   <a class="btn btn-block">
+                        <i class="fa fa-user-md">&nbsp;</i>
+                       <span>{{intranet.author}}</span>
+                   </a>
+                   <a class="btn btn-block">
+                        <i class="fa fa-clock-o">&nbsp;</i><span ng-bind="intranet.date.$date | date:'dd/MM/yyyy'"></span>
+                   </a>
+               </div>
+            </div>
+        </div>
+    </div>
+</section>

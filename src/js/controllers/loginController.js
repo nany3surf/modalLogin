@@ -8,45 +8,26 @@ app.config(function(googleLoginProvider) {
         scopes: ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/plus.login"]
     });
 });
-app.controller('loginController', ['$scope', '$element', 'title', 'close', 'googleLogin', 'googlePlus',
-    function($scope, $element, title, close, googleLogin, googlePlus) {
+app.controller('loginController', ['$scope', '$element', 'title', 'close', 'googleLogin',
+    function($scope, $element, title, close, googleLogin) {
 
-        $scope.loggedin = 'Not logged in';
+        $scope.loggedin = null;
         $scope.currentUser = 'No user';
-        /*$scope.age = null;*/
         $scope.title = title;
-        console.log('estoy con pruebas');
 
         //  This close function doesn't need to use jQuery or bootstrap, because
         //  the button has the 'data-dismiss' attribute.
         $scope.close = function() {
-            console.log("Voy a por el login");
             googleLogin.login();
         };
 
         $scope.$on("google:authenticated", function(auth) {
-            console.log(auth);
-            /*googlePlus.getCurrentUser().then(function(user) {
-                $scope.currentUser = user;
-                $scope.loggedin = 'You are loggedin';
-                close({
-                    name: $scope.currentUser.displayName,
-                    loggedin: $scope.loggedin
-                }, 500); // close, but give 500ms for bootstrap to animate
-            });*/
+            $scope.loggedin = 'Im logged in';
+            close({
+                name: 'My name',
+                loggedin: $scope.loggedin
+            }, 500); //
         });
-
-        $scope.$on("googlePlus:loaded", function() {
-            googlePlus.getCurrentUser().then(function(user) {
-                $scope.currentUser = user;
-                $scope.loggedin = 'You are loggedin';
-                close({
-                    name: $scope.currentUser.displayName,
-                    loggedin: $scope.loggedin
-                }, 500); // close, but give 500ms for bootstrap to animate
-            });
-        });
-
 
         //  This cancel function must use the bootstrap, 'modal' function because
         //  the doesn't have the 'data-dismiss' attribute.
